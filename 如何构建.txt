@@ -1,0 +1,26 @@
+﻿ServerDesk 源码副本（2026-10-31）
+================================
+
+这是项目源码的完整副本。已排除编译产物和依赖：
+  node_modules/           前端依赖（npm install 重新装）
+  dist/                   前端构建输出
+  src-tauri/target/       Rust 编译产物
+  release/                打包好的 exe（在 ServerDesk-Test 文件夹里）
+
+保留了一份已编译的 sidecar：
+  src-tauri/binaries/serverdesk-channel-x86_64-pc-windows-msvc.exe
+  有它才能直接构建（Tauri 的 externalBin 会在构建时检查这个文件）。
+  要自己重编，见 README 的「重新编译 sidecar」。
+
+构建
+  1. 需要 Node 20+、Rust stable（MSVC 工具链）、WebView2 运行时
+  2. npm install
+  3. npm run tauri build
+  产物：src-tauri/target/release/server-desk.exe 和 bundle/nsis 下的安装包
+
+  注意：不要用 cargo build --release。Tauri CLI 会注入内嵌前端所需的
+  构建环境，直接用 cargo 打出来的程序会去连 http://localhost:1420。
+
+文档
+  README.md     使用、构建、已验证项与已知限制
+  docs/         设计文档：VAULT-DESIGN / CONNECTION-DESIGN / LOGIN-DESIGN / IMPLEMENTATION

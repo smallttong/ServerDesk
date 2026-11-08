@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "仅主窗口（本地页面）可以调用后端命令；远程服务页面不授予任何 IPC 权限。",
+  "windows": ["main"],
+  "permissions": ["core:default", "opener:default"]
+}

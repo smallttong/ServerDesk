@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>模拟登录页</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; font-family:"Segoe UI","Microsoft YaHei UI",sans-serif; background:#0b1220;
+         color:#e6edf7; display:flex; min-height:100vh; align-items:center; justify-content:center; }
+  .card { width:340px; background:#121b2c; border:1px solid #22304a; border-radius:12px; padding:24px; }
+  h1 { font-size:18px; margin:0 0 16px; }
+  label { display:block; font-size:12px; color:#8fa3c0; margin:12px 0 6px; }
+  input { width:100%; box-sizing:border-box; height:34px; padding:0 10px; border-radius:8px;
+          border:1px solid #22304a; background:#0d1522; color:#e6edf7; }
+  button { width:100%; height:36px; margin-top:18px; border:0; border-radius:8px;
+           background:#5b8cff; color:#fff; font-size:13px; }
+  #out { margin-top:14px; font-size:12px; }
+  .ok { color:#4dd4ac; } .bad { color:#ff8080; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>模拟登录页</h1>
+    <form id="f">
+      <label>用户名</label>
+      <input id="u" name="username" type="text" autocomplete="username" />
+      <label>密码</label>
+      <input id="p" name="password" type="password" autocomplete="current-password" />
+      <button type="submit">登录</button>
+    </form>
+    <div id="out"></div>
+  </div>
+<script>
+  document.getElementById('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var u = document.getElementById('u').value;
+    var p = document.getElementById('p').value;
+    var out = document.getElementById('out');
+    if (p === 'Sup3r-Secret-Pw9') { out.textContent = '已登录：' + u; out.className = 'ok'; }
+    else { out.textContent = '密码错误'; out.className = 'bad'; }
+  });
+</script>
+</body>
+</html>
