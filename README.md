@@ -13,7 +13,7 @@ Web 管理后台，统一收进一个类似 IDE 的窗口里。**它不重新实
 | `ServerDesk_0.1.0_x64-setup.exe` | 安装版，已包含网络通道程序 |
 | `ServerDesk_0.1.0_x64-portable.zip` | 绿色版，解压后运行 `ServerDesk.exe`；请保留同目录的 `serverdesk-channel.exe` |
 
-首次使用请阅读 [使用说明](使用说明.md)。本项目由 AI 辅助开发，目前作为测试版提供。
+首次使用请阅读 [中文使用说明](使用说明.md) 或 [English User Guide](USER_GUIDE_EN.md)。本项目由 AI 辅助开发，目前作为测试版提供。
 
 系统要求：Windows 10/11 + WebView2 运行时（Win11 自带；Win10 装了新版 Edge 即具备）。
 
