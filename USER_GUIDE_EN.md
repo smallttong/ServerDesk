@@ -1,4 +1,4 @@
-# ServerDesk v0.1.0 User Guide
+# ServerDesk v0.1.1 User Guide
 
 ServerDesk is a Windows desktop app that opens multiple web administration panels in one window, such as server dashboards, monitoring tools, and bot control panels. Each service still manages its own features and login credentials.
 
@@ -10,11 +10,11 @@ Requirements: Windows 10 or 11 and the WebView2 runtime.
 
 ### Installer
 
-Download `ServerDesk_0.1.0_x64-setup.exe`, run it, and follow the installer. It includes the network channel program and is the recommended choice for regular use.
+Download `ServerDesk_0.1.1_x64-setup.exe`, run it, and follow the installer. It includes the network channel program and is the recommended choice for regular use.
 
 ### Portable package
 
-Download `ServerDesk_0.1.0_x64-portable.zip` and extract the entire archive before running `ServerDesk.exe`. Keep `serverdesk-channel.exe` in the same folder as `ServerDesk.exe`. Do not run a single file directly from inside the ZIP archive.
+Download `ServerDesk_0.1.1_x64-portable.zip` and extract the entire archive before running `ServerDesk.exe`. Keep `serverdesk-channel.exe` in the same folder as `ServerDesk.exe`. Do not run a single file directly from inside the ZIP archive.
 
 Both packages have the same features. If you are unsure which to choose, use the installer.
 

@@ -623,11 +623,14 @@ pub fn autologin_script(origin: &str, username: &str, secret: &str) -> String {
         "(function(){try{",
         "var ORIGIN=", &o, ";var USER=", &u, ";var SECRET=", &s, ";",
         "if(location.origin!==ORIGIN)return;",
-        "if(window.__sdAutologinFor===location.href)return;",
         "var timer=setInterval(function(){try{",
         "if(location.origin!==ORIGIN){clearInterval(timer);return;}",
         "var pw=Array.prototype.filter.call(document.querySelectorAll('input[type=password]'),function(el){return el.offsetParent!==null&&!el.disabled&&!el.readOnly;});",
         "if(pw.length!==1)return;",
+        // Already filled for this URL and the field still holds a value: leave
+        // it alone. An empty field means a fresh login form (expired session),
+        // which we fill and submit again.
+        "if(window.__sdAutologinFor===location.href&&pw[0].value)return;",
         "clearInterval(timer);window.__sdAutologinFor=location.href;",
         "var passEl=pw[0];",
         "var all=Array.prototype.slice.call(document.querySelectorAll('input'));",
@@ -659,8 +662,11 @@ static LAST_AUTOLOGIN: Mutex<
 fn autologin_already_attempted(label: &str, href: &str) -> bool {
     let mut guard = LAST_AUTOLOGIN.lock().unwrap();
     let map = guard.get_or_insert_with(std::collections::HashMap::new);
-    if let Some((_last_href, at)) = map.get(label) {
-        if at.elapsed() < std::time::Duration::from_secs(25) {
+    // Throttled per window *and* per document URL. A panel that hard-navigates
+    // (`/` -> `/login`) is a new document and needs its own injection, while
+    // the page-load hook and the URL poller must not fire twice for one URL.
+    if let Some((last_href, at)) = map.get(label) {
+        if last_href == href && at.elapsed() < std::time::Duration::from_secs(25) {
             return true;
         }
     }

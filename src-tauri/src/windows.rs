@@ -2,8 +2,8 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use std::sync::Mutex;
 use tauri::{
-    AppHandle, Manager, PhysicalPosition, PhysicalSize, WebviewUrl, WebviewWindow,
-    WebviewWindowBuilder,
+    webview::PageLoadEvent, AppHandle, Manager, PhysicalPosition, PhysicalSize, WebviewUrl,
+    WebviewWindow, WebviewWindowBuilder,
 };
 use tauri_plugin_opener::OpenerExt;
 use url::Url;
@@ -327,6 +327,17 @@ pub fn open(app: &AppHandle, state: &WinState, id: &str) -> Result<(), String> {
                 win.show().map_err(|e| format!("显示服务窗口失败: {e}"))?;
                 let _ = win.set_focus();
             }
+            // No reload happens for a window that kept its network path, so the
+            // page-load hook never fires. The page may still be sitting on a
+            // login form (session expired), so re-inject here; the throttle
+            // keyed on window + URL keeps this from spamming the page.
+            crate::vault::try_autologin(
+                app,
+                &win,
+                &service.id,
+                &endpoint.endpoint_id,
+                &endpoint.expected_origin,
+            );
             hide_previous(app, previous.as_deref(), &label);
             *state.active.lock().unwrap() = Some(label);
             return Ok(());
@@ -371,7 +382,15 @@ pub fn open(app: &AppHandle, state: &WinState, id: &str) -> Result<(), String> {
         .shadow(false)
         .visible(false)
         .initialization_script(INIT_SCRIPT)
-        .on_page_load(move |window, _payload| {
+        .on_page_load(move |window, payload| {
+            // Only after the document finished loading. `Started` fires at
+            // ContentLoading, and panels that hard-navigate (`/` -> `/login`,
+            // as fnOS does) throw that document away, taking the injected
+            // polling script with it. The Finished event of the replacement
+            // document gets its own injection.
+            if payload.event() != PageLoadEvent::Finished {
+                return;
+            }
             crate::vault::try_autologin(
                 window.app_handle(),
                 &window,
