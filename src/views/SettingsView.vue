@@ -41,6 +41,9 @@ const editing = ref<ServiceConfig | null>(null);
 const confirming = ref<string | null>(null);
 const confirmLogout = ref(false);
 
+// Injected by Vite from package.json so it can never drift from the build.
+const APP_VERSION = __APP_VERSION__;
+
 const hostnameDraft = ref(state.config.settings.channelHostname);
 const tagsDraft = ref(state.config.settings.channelTags);
 
@@ -455,7 +458,7 @@ async function setStartPage(value: "home" | "last") {
       <div class="card mt-3 divide-y divide-line/60">
         <div class="flex items-center justify-between px-4 py-3">
           <div class="text-[12.5px]">版本</div>
-          <div class="font-mono text-[11.5px] text-muted">0.1.0</div>
+          <div class="font-mono text-[11.5px] text-muted">{{ APP_VERSION }}</div>
         </div>
         <div class="flex items-center justify-between gap-4 px-4 py-3">
           <div class="text-[12.5px]">配置文件</div>
