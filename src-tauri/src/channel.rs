@@ -9,7 +9,7 @@ use tauri::{AppHandle, Emitter, Manager};
 use crate::config::{self, AppConfig, EndpointKind};
 
 /// What the UI needs to know about the built-in tailnet channel.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ChannelStatus {
     /// stopped | starting | login | up | error
@@ -257,11 +257,13 @@ fn handle_event(app: &AppHandle, generation: u64, value: serde_json::Value) {
     let event = value.get("event").and_then(|v| v.as_str()).unwrap_or("");
     let state = app.state::<ChannelState>();
     let mut became_up = false;
+    let before: ChannelStatus;
     {
         let mut status = state.status.lock().unwrap();
         if state.generation.load(Ordering::SeqCst) != generation {
             return;
         }
+        before = status.clone();
         match event {
             "listening" => {
                 status.socks_port = value.get("port").and_then(|v| v.as_u64()).map(|p| p as u16);
@@ -308,6 +310,12 @@ fn handle_event(app: &AppHandle, generation: u64, value: serde_json::Value) {
     }
     let snapshot = state.snapshot();
     drop(state);
+    // The sidecar also streams `log` lines (tsnet is chatty). Those leave the
+    // snapshot untouched, and re-emitting the same status would make the UI
+    // re-open the active service — which raises the whole window to the front.
+    if snapshot == before {
+        return;
+    }
     let _ = app.emit("channel-status", snapshot.clone());
 
     // Windows created before the tunnel came up were loaded without a proxy.

@@ -91,9 +91,16 @@ onMounted(async () => {
   // The built-in tailnet channel reports login URLs and connection state here.
   unlisteners.push(
     await listen<ChannelStatus>("channel-status", (event) => {
+      const prev = state.channel;
       state.channel = event.payload;
       if (!state.config.settings.channelEnabled) {
         state.health = {};
+        return;
+      }
+      // Status events also arrive for sidecar log lines and for reconnects that
+      // change nothing the UI cares about. Only act on a real transition —
+      // re-opening the active service on every event yanks the window forward.
+      if (prev.phase === event.payload.phase && prev.socksPort === event.payload.socksPort) {
         return;
       }
       if (state.channel.phase === "up") {

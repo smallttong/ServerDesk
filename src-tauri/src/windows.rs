@@ -116,6 +116,15 @@ fn main_window(app: &AppHandle) -> Result<WebviewWindow, String> {
         .ok_or_else(|| "主窗口不存在".to_string())
 }
 
+/// True when the user is currently working in the shell. Background work (a
+/// channel status event, a reconnect, *anything* that is not the user clicking)
+/// must never raise the app over the window they are actually using.
+fn main_is_focused(app: &AppHandle) -> bool {
+    app.get_webview_window("main")
+        .and_then(|win| win.is_focused().ok())
+        .unwrap_or(false)
+}
+
 /// Hosts the user has explicitly configured (in any endpoint) plus loopback
 /// are the only origins allowed to keep rendering inside the app.
 fn allowed_hosts(cfg: &AppConfig) -> Vec<String> {
@@ -322,10 +331,17 @@ pub fn open(app: &AppHandle, state: &WinState, id: &str) -> Result<(), String> {
         if same_path {
             apply_geometry(app, rect, &win)?;
             // While the shell is minimized or hidden to tray, opening a service
-            // must not pop a window onto the desktop.
+            // must not pop a window onto the desktop. And a window that is
+            // already on screen is only raised further when the shell itself
+            // has focus — i.e. the user just clicked, not a background event.
+            let already_visible = win.is_visible().unwrap_or(false);
             if shell_can_show(app, state) {
-                win.show().map_err(|e| format!("显示服务窗口失败: {e}"))?;
-                let _ = win.set_focus();
+                if !already_visible {
+                    win.show().map_err(|e| format!("显示服务窗口失败: {e}"))?;
+                }
+                if !already_visible || main_is_focused(app) {
+                    let _ = win.set_focus();
+                }
             }
             // No reload happens for a window that kept its network path, so the
             // page-load hook never fires. The page may still be sitting on a
@@ -469,7 +485,9 @@ pub fn open(app: &AppHandle, state: &WinState, id: &str) -> Result<(), String> {
     apply_geometry(app, rect, &win)?;
     if shell_can_show(app, state) {
         win.show().map_err(|e| format!("显示服务窗口失败: {e}"))?;
-        let _ = win.set_focus();
+        if main_is_focused(app) {
+            let _ = win.set_focus();
+        }
     }
 
     // SPA logins (hash routes) don't fire another page load, so watch the URL

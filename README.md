@@ -6,12 +6,12 @@ Web 管理后台，统一收进一个类似 IDE 的窗口里。**它不重新实
 
 ## 下载与使用
 
-从 [v0.1.1 Release](https://github.com/smallttong/ServerDesk/releases/tag/v0.1.1) 下载：
+从 [v0.1.2 Release](https://github.com/smallttong/ServerDesk/releases/tag/v0.1.2) 下载：
 
 | 文件 | 说明 |
 | --- | --- |
-| `ServerDesk_0.1.1_x64-setup.exe` | 安装版，已包含网络通道程序 |
-| `ServerDesk_0.1.1_x64-portable.zip` | 绿色版，解压后运行 `ServerDesk.exe`；请保留同目录的 `serverdesk-channel.exe` |
+| `ServerDesk_0.1.2_x64-setup.exe` | 安装版，已包含网络通道程序 |
+| `ServerDesk_0.1.2_x64-portable.zip` | 绿色版，解压后运行 `ServerDesk.exe`；请保留同目录的 `serverdesk-channel.exe` |
 
 更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -195,7 +195,7 @@ npm run tauri build
 产物：
 
 - `src-tauri/target/release/server-desk.exe` —— 可直接运行的绿色 exe
-- `src-tauri/target/release/bundle/nsis/ServerDesk_0.1.1_x64-setup.exe` —— NSIS 安装包
+- `src-tauri/target/release/bundle/nsis/ServerDesk_0.1.2_x64-setup.exe` —— NSIS 安装包
 - 本次交付的成品另复制在 GitHub Release 中的绿色版 ZIP
 
 > 注意：请用 `npm run tauri build` 构建，不要直接 `cargo build --release`。
