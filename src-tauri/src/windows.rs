@@ -400,10 +400,10 @@ pub fn open(app: &AppHandle, state: &WinState, id: &str) -> Result<(), String> {
         .initialization_script(INIT_SCRIPT)
         .on_page_load(move |window, payload| {
             // Only after the document finished loading. `Started` fires at
-            // ContentLoading, and panels that hard-navigate (`/` -> `/login`,
-            // as fnOS does) throw that document away, taking the injected
-            // polling script with it. The Finished event of the replacement
-            // document gets its own injection.
+            // ContentLoading, and panels that hard-navigate (`/` -> `/login`)
+            // throw that document away, taking the injected polling script with
+            // it. The Finished event of the replacement document gets its own
+            // injection.
             if payload.event() != PageLoadEvent::Finished {
                 return;
             }

@@ -1,4 +1,4 @@
-﻿ServerDesk 源码副本（2026-10-31）
+ServerDesk 源码副本（2026-10-31）
 ================================
 
 这是项目源码的完整副本。已排除编译产物和依赖：
@@ -22,5 +22,5 @@
   构建环境，直接用 cargo 打出来的程序会去连 http://localhost:1420。
 
 文档
-  README.md     使用、构建、已验证项与已知限制
+  README.md     使用、构建与已知限制
   docs/         设计文档：VAULT-DESIGN / CONNECTION-DESIGN / LOGIN-DESIGN / IMPLEMENTATION
